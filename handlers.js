@@ -1,15 +1,44 @@
+const { writeFileSync } = require('fs');
 const request = require('superagent');
 const database = require('./data.json');
 
-const registerNewUser = function (req, res) {
-  const { id, avatar } = req.session;
-  const userInfo = { id, avatar, ...req.body };
-  console.log({ userInfo, artWork: [] });
-  database.push({ userInfo, artWork: [] });
-  res.redirect('/gallery');
+const saveArt = (req, res) => {
+  const { id } = req.session;
+  const { md5, name, data } = req.files.image;
+  const { tags, title, caption } = req.body;
+  writeFileSync(`./public/images/${name}`, data);
+  database
+    .find((u) => u.id === id)
+    .artWorks.unshift({ md5, name, tags: tags.split(' '), title, caption });
+  res.end();
 };
 
-const handleLogin = function (req, res) {
+const serveArtWork = (req, res) => {
+  const { id } = req.session;
+  const artWorks = database.find((u) => {
+    return u.id === id;
+  });
+  res.json(artWorks);
+};
+
+const handleLogout = (req, res) => {
+  req.session = null;
+  res.end();
+};
+
+const registerNewUser = (req, res) => {
+  const { id, avatar } = req.session;
+  database.unshift({ id, avatar, ...req.body, artWorks: [] });
+  res.end();
+};
+
+const isLoggedIn = (req, res) => {
+  const { id } = req.session;
+  const isLoggedIn = id ? true : false;
+  res.json({ isLoggedIn, id });
+};
+
+const handleLogin = (req, res) => {
   const { sub, name, picture } = req.userInfo;
   const user = {
     id: sub,
@@ -36,7 +65,7 @@ const getToken = (code, credentials) => {
     .then((res) => res.body);
 };
 
-const getUserInfo = function ({ token_type, access_token }) {
+const getUserInfo = ({ token_type, access_token }) => {
   return request
     .get(`https://www.googleapis.com/oauth2/v3/userinfo`)
     .set('User-Agent', 'artInAction')
@@ -62,4 +91,13 @@ const serveAuthUrl = (req, res) => {
   res.json({ url });
 };
 
-module.exports = { fetchDetails, handleLogin, registerNewUser, serveAuthUrl };
+module.exports = {
+  fetchDetails,
+  handleLogin,
+  registerNewUser,
+  serveAuthUrl,
+  serveArtWork,
+  isLoggedIn,
+  saveArt,
+  handleLogout,
+};
