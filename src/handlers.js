@@ -1,6 +1,6 @@
 const { writeFileSync } = require('fs');
 const request = require('superagent');
-const database = require('./data.json');
+const database = require('../data.json');
 
 const saveArt = (req, res) => {
   const { id } = req.session;
@@ -10,6 +10,7 @@ const saveArt = (req, res) => {
   database
     .find((u) => u.id === id)
     .artWorks.unshift({ md5, name, tags: tags.split(' '), title, caption });
+  console.log(database);
   res.end();
 };
 
@@ -28,7 +29,7 @@ const handleLogout = (req, res) => {
 
 const registerNewUser = (req, res) => {
   const { id, avatar } = req.session;
-  database.unshift({ id, avatar, ...req.body, artWorks: [] });
+  database.push({ id, avatar, ...req.body, artWorks: [] });
   res.end();
 };
 
@@ -80,7 +81,6 @@ const fetchDetails = async (req, res, next) => {
     req.userInfo = await getUserInfo(token);
     next();
   } catch (err) {
-    console.log('err', err);
     return res.send(err);
   }
 };
