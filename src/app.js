@@ -31,6 +31,7 @@ const dataStore = new DataStore(createClient());
 app.locals = { ClientId, ClientSecret, RedirectUri, ReactServer };
 app.dataStore = dataStore;
 
+app.use(express.static('./react-build'));
 app.use(morgan('tiny'));
 app.use(express.json());
 app.use(fileUpload());

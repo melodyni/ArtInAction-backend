@@ -9,7 +9,7 @@ class DataStore {
         if (err) {
           reject(err);
         }
-        const artData = JSON.parse(value);
+        const artData = JSON.parse(value) || [];
         resolve(artData);
       });
     });

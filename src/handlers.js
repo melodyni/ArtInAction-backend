@@ -1,35 +1,41 @@
 const { writeFileSync } = require('fs');
 const request = require('superagent');
-const database = require('../data.json');
 
-const saveArt = (req, res) => {
+const saveArt = async (req, res) => {
   const { id } = req.session;
   const { md5, name, data } = req.files.image;
   const { tags, title, caption } = req.body;
+  const { dataStore } = req.app;
   writeFileSync(`./public/images/${name}`, data);
-  database
+  const artData = await dataStore.getArtWork();
+  artData
     .find((u) => u.id === id)
     .artWorks.unshift({ md5, name, tags: tags.split(' '), title, caption });
-  console.log(database);
+  dataStore.setArtWork(artData);
   res.end();
 };
 
-const serveArtWork = (req, res) => {
+const serveArtWork = async (req, res) => {
   const { id } = req.session;
-  const artWorks = database.find((u) => {
+  const { dataStore } = req.app;
+  const artData = await dataStore.getArtWork();
+  const artWorks = artData.find((u) => {
     return u.id === id;
   });
   res.json(artWorks);
 };
 
-const handleLogout = (req, res) => {
-  req.session = null;
+const registerNewUser = async (req, res) => {
+  const { id, avatar } = req.session;
+  const { dataStore } = req.app;
+  const artData = await dataStore.getArtWork();
+  artData.push({ id, avatar, ...req.body, artWorks: [] });
+  dataStore.setArtWork(artData);
   res.end();
 };
 
-const registerNewUser = (req, res) => {
-  const { id, avatar } = req.session;
-  database.push({ id, avatar, ...req.body, artWorks: [] });
+const handleLogout = (req, res) => {
+  req.session = null;
   res.end();
 };
 
