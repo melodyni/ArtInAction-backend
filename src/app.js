@@ -27,7 +27,7 @@ app.dataStore = dataStore;
 
 app.use(morgan('tiny'));
 app.use(fileUpload());
-app.use(express.static(`${__dirname}/../react-build`));
+app.use(express.static(`${__dirname}/../build`));
 app.use(express.json());
 app.use('/api/images', express.static('public/images'));
 app.set('sessionMiddleware', session({ secret: CookieSecret }));

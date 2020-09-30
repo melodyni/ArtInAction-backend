@@ -1,0 +1,13 @@
+language: node_js
+node_js: lts/*
+jobs:
+  include:
+    - stage: DEPLOY
+      script: './build.sh'
+      deploy:
+        app: art-in-action
+        api_key:
+          secure: FPczNOLicyNR+sMhYgyirDglwPrfMlIjHo9V3sFdMrOLtWjDMUaU1glyrV3HnhAyG+5ycauh2UuSCvD9RbFG1qO9QsZmkhNiufBlvR90otNc7BDtY4Ee6w80tmOoA//AfqmCf2nM9NHW+V608VFOtOSeZRX0VEg+O5Hqi8/Knk7Te/FKp9K7MnUOxVQV6R+yxXi73mkG2/MULOSal4XQGVF6hmX1v7SNGueeNtFNKPuB85CfV++vX3aJyfY1BdRHl+vj5TQoFdD9balrbGd+MLjwm6psBxd+Mxn/rJiD2A+DORwiT2dCdSpCVt7RHSGzyoF1gVoYMysm5L6zumzalp5W2akNevLwFQ3Wi1YMxNdEmx8ZO83N+7GHSOWqk6toT/5vEYdLIvC7b9guyFfAjpuivOd9Wkep2Ug+HgS6bJW354y/1bAwzebM66vwzb4CkzRj8vHwOvippHwNfci54lIke4gibWjo+f6PBTmATNZ/9OSAmre6cArelWq34EJ7NnT8TrAfJbjENpE8dCF1qnaLPo/Oj7lGSi2BPoIvcwGawcLTE1OAekRo1yMTTD5/6kw7Cyr/VcJVgKAymBvNToW5gke1w2CnRPRGABGzQLbmsxkGfaDJrcgMcRYV5bGrujCvlAiYpgYpK/UBuHEmhQwEWqDxDHiASmXanxUNgC4=
+        provider: heroku
+        run: restart
+        skip_cleanup: true
