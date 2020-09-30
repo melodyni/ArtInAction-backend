@@ -26,9 +26,9 @@ app.locals = { ClientId, ClientSecret, RedirectUri };
 app.dataStore = dataStore;
 
 app.use(morgan('tiny'));
+app.use(fileUpload());
 app.use(express.static(`${__dirname}/../react-build`));
 app.use(express.json());
-app.use(fileUpload());
 app.use('/api/images', express.static('public/images'));
 app.set('sessionMiddleware', session({ secret: CookieSecret }));
 app.use((...args) => app.get('sessionMiddleware')(...args));
