@@ -98,6 +98,7 @@ const fetchDetails = async (req, res, next) => {
 };
 
 const serveAuthUrl = (req, res) => {
+  const { ClientId, RedirectUri } = req.app.locals;
   const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${ClientId}&response_type=code&redirect_uri=${RedirectUri}&scope=https%3A//www.googleapis.com/auth/userinfo.profile`;
   res.json({ url });
 };
