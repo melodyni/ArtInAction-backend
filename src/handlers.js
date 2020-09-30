@@ -98,8 +98,7 @@ const fetchDetails = async (req, res, next) => {
 };
 
 const serveAuthUrl = (req, res) => {
-  const url =
-    'https://accounts.google.com/o/oauth2/v2/auth?client_id=255108424820-8e1p39r9u251c8gagoklt9nb1e8vngoq.apps.googleusercontent.com&response_type=code&redirect_uri=http://localhost:3002/auth/user&scope=https%3A//www.googleapis.com/auth/userinfo.profile';
+  const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${ClientId}&response_type=code&redirect_uri=${RedirectUri}&scope=https%3A//www.googleapis.com/auth/userinfo.profile`;
   res.json({ url });
 };
 
