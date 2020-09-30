@@ -3,6 +3,7 @@ const request = require('superagent');
 
 const saveArt = async (req, res) => {
   const { id } = req.session;
+  console.log('---', req.files, req.body);
   const { md5, name, data } = req.files.image;
   const { tags, title, caption } = req.body;
   const { dataStore } = req.app;
