@@ -17,29 +17,23 @@ const {
   handleLogout,
 } = require('./handlers');
 
-const {
-  ClientId,
-  ClientSecret,
-  RedirectUri,
-  ReactServer,
-  CookieSecret,
-} = require('../config.js');
+const { ClientId, ClientSecret, RedirectUri, CookieSecret } = process.env;
 
 const app = express();
 
 const dataStore = new DataStore(createClient());
-app.locals = { ClientId, ClientSecret, RedirectUri, ReactServer };
+app.locals = { ClientId, ClientSecret, RedirectUri };
 app.dataStore = dataStore;
 
-app.use(express.static('./react-build'));
 app.use(morgan('tiny'));
+app.use(express.static(`${__dirname}/../react-build`));
 app.use(express.json());
 app.use(fileUpload());
 app.use('/api/images', express.static('public/images'));
 app.set('sessionMiddleware', session({ secret: CookieSecret }));
 app.use((...args) => app.get('sessionMiddleware')(...args));
 
-app.post('/api/register', registerNewUser);
+app.post('/api/registerUser', registerNewUser);
 app.post('/api/saveArt', saveArt);
 
 app.get('/api/artWork', serveArtWork);

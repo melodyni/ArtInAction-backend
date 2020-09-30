@@ -39,10 +39,16 @@ const handleLogout = (req, res) => {
   res.end();
 };
 
-const isLoggedIn = (req, res) => {
+const isLoggedIn = async (req, res) => {
   const { id } = req.session;
   const isLoggedIn = id ? true : false;
-  res.json({ isLoggedIn, id });
+  const { dataStore } = req.app;
+  const artData = await dataStore.getArtWork();
+  const user = artData.find((u) => {
+    return u.id === id;
+  });
+  const isRegisteredUser = user ? true : false;
+  res.json({ isLoggedIn, isRegisteredUser, id });
 };
 
 const handleLogin = (req, res) => {
@@ -54,7 +60,7 @@ const handleLogin = (req, res) => {
     sessionCreatedAt: new Date().toJSON(),
   };
   req.session = user;
-  res.redirect(req.app.locals.ReactServer);
+  res.redirect(`/`);
 };
 
 const getToken = (code, credentials) => {
